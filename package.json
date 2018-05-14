@@ -10,8 +10,12 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.6.0",
+    "cheerio": "^1.0.0-rc.2",
     "debug": "^3.1.0",
     "logplease": "^1.2.14",
-    "record-node": "github:mistakia/record-node"
+    "parse": "github:vacay/parse",
+    "record-node": "github:mistakia/record-node",
+    "request": "^2.85.0",
+    "urijs": "^1.19.1"
   }
 }
