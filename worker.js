@@ -3,9 +3,12 @@ const async = require('async')
 const domain = require('domain')
 const debug = require('debug')
 
+const parse = require('./parse')
+
 class Worker {
-  constructor(filePath) {
+  constructor(filePath, log) {
     this.filePath = filePath
+    this._log = log
 
     this.logger = debug('record:bot:worker')
     this.queue = async.queue(this._run.bind(this), 1)
@@ -65,14 +68,32 @@ class Worker {
   _update(url, done) {
     this.logger(`Crawling ${url}`)
 
+    const self = this
     const d = domain.create()
     d.on('error', (err) => {
       done(err)
     })
 
     d.run(() => {
-      done()
-      //TODO: parse page
+      parse(url, (err, items) => {
+	if (err)
+	  return done(err)
+
+	items.forEach(async (item) => {
+	  const data = {
+	    url: item.url,
+	    stream_url: item.stream_url,
+	    title: item.title
+	  }
+	  const track = await self._log.tracks.findOrCreate(data)
+	  console.log(track)
+
+	  //TODO: save item as a track
+	  //console.log(item)
+	})
+
+	done()
+      })
     })    
   }
 

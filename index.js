@@ -31,6 +31,6 @@ const node = new RecordNode({
 })
 
 node.on('ready', function() {
-  const worker = new Worker(dataFile)
+  const worker = new Worker(dataFile, node._log)
   //ready
 })
