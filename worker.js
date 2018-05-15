@@ -27,9 +27,9 @@ class Worker {
     }
 
     const now = new Date()
-    const tenMinsAgo = new Date(now.setTime(now.getTime() - 600000))
+    const hourAgo = new Date(now.setTime(now.getTime() - 3600000))
     
-    if (this.lastCheck && this.lastCheck < tenMinsAgo) {
+    if (this.lastCheck && this.lastCheck < hourAgo) {
       this.logger('Checked less than 10 mins ago, will check again in a minute')
       return checkLater()
     }
