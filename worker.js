@@ -11,6 +11,8 @@ class Worker {
     this._log = log
 
     this.logger = debug('record:bot:worker')
+    this.logger.log = console.log.bind(console) // log to stdout instead of stderr
+    this.logger.err = debug('record:bot:worker:err')
     this.queue = async.queue(this._run.bind(this), 1)
     this.queue.drain = this._check.bind(this)    
 
@@ -86,7 +88,6 @@ class Worker {
 	    title: item.title
 	  }
 	  const track = await self._log.tracks.findOrCreate(data)
-	  console.log(track)
 
 	  //TODO: save item as a track
 	  //console.log(item)
@@ -98,6 +99,7 @@ class Worker {
   }
 
   _finish(err, url, done) {
+    if (err) this.logger.err(err)
     this.logger(`Finishing ${url} job`)
 
     this.lines.push(this.lines.shift())
