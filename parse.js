@@ -5,120 +5,108 @@ const URI = require('urijs')
 
 const utils = require('./utils')
 
-module.exports = function(url, callback) {
+module.exports = function (url, callback) {
+  // TODO: work with either a url or html
 
-  //TODO: work with either a url or html
-
-  let title = null  
+  let title = null
   let tracks = []
   let links = []
   let paths = []
   let feeds = []
-  
+
   async.waterfall([
 
-    function(next) {
+    function (next) {
+      utils.getHTML(url, function (err, body) {
+        if (err) { return next(err) }
 
-      utils.getHTML(url, function(err, body) {
+        var isXML = body.slice(1, 5) === '?xml'
+        var $ = cheerio.load(body, {
+          xmlMode: !!isXML
+        })
 
-	if (err)
-	  return next(err)
+        title = $('title').first().text()
 
-	var isXML = body.slice(1, 5) === '?xml';
-	var $ = cheerio.load(body, {
-	  xmlMode: isXML ? true : false
-	});
+        if (!isXML) {
+          var extract = function () {
+            var feed = $(this).attr('href')
+            try {
+              var uri = URI(feed).absoluteTo(url).normalize()
+              if (feeds.indexOf(uri.toString()) < 0) { feeds.push(uri.toString()) }
+            } catch (e) {
+              console.log(e)
+            }
+          }
 
-	title = $('title').first().text();
+          // Legit
+          $('link[type*=rss]').each(extract)
+          $('link[type*=atom]').each(extract)
 
-	if (!isXML) {
+          // Questionable
+          $('a:contains(RSS)').each(extract)
+          $('a[href*=feedburner]').each(extract)
+        } else {
+          // get entry/item links and add to path
+          $('feed entry link').each(function () {
+            var path = $(this).attr('href')
+            // validate domain
+            paths.push(URI(path).search('').fragment('').toString())
+          })
 
-	  var extract = function() {
-	    var feed = $(this).attr('href');
-	    try {
-	      var uri = URI(feed).absoluteTo(url).normalize();
-	      if (feeds.indexOf(uri.toString()) < 0)
-		feeds.push(uri.toString());
-	    } catch(e) {
-	      console.log(e)
-	    }
-	  };
+          $('channel item link').each(function () {
+            var path = $(this).text()
+            // validate domain
+            paths.push(URI(path).search('').fragment('').toString())
+          })
+        }
 
-	  // Legit
-	  $('link[type*=rss]').each(extract);
-	  $('link[type*=atom]').each(extract);
-
-	  // Questionable
-	  $('a:contains(RSS)').each(extract);
-	  $('a[href*=feedburner]').each(extract);
-
-	} else {
-	  // get entry/item links and add to path
-	  $('feed entry link').each(function() {
-	    var path = $(this).attr('href');
-	    // validate domain
-	    paths.push(URI(path).search('').fragment('').toString());
-	  });
-
-	  $('channel item link').each(function() {
-	    var path = $(this).text();
-	    // validate domain
-	    paths.push(URI(path).search('').fragment('').toString());
-	  });
-	}
-
-	links = links.concat(utils.dedup(utils.getResources(body, url)));
-	next();
-      });
+        links = links.concat(utils.dedup(utils.getResources(body, url)))
+        next()
+      })
     },
 
-    function(next) {
-      var parsePaths = function(path, done) {
-	parse(path, function(err, results) {
-	  if (err) console.log(err)
+    function (next) {
+      var parsePaths = function (path, done) {
+        parse(path, function (err, results) {
+          if (err) console.log(err)
 
-	  if (results.length) {
-	    tracks = tracks.concat(results);
-	  } else {
-	    utils.getHTML(path, function(err, body) {
-	      if (err) {
-		console.log(err)
-		done();
-		return;
-	      }
+          if (results.length) {
+            tracks = tracks.concat(results)
+          } else {
+            utils.getHTML(path, function (err, body) {
+              if (err) {
+                console.log(err)
+                done()
+                return
+              }
 
-	      links = links.concat(utils.dedup(utils.getResources(body, path)));
-	      done();
-	    });
-	  }
-	});
-      };
+              links = links.concat(utils.dedup(utils.getResources(body, path)))
+              done()
+            })
+          }
+        })
+      }
 
-      paths = utils.dedup(paths).slice(0, 25);
+      paths = utils.dedup(paths).slice(0, 25)
 
-      async.each(paths, parsePaths, next);
-
+      async.each(paths, parsePaths, next)
     },
 
-    function(next) {
+    function (next) {
+      if (tracks.length) { return next(null) }
 
-      if (tracks.length)
-	return	next(null)
+      links = utils.dedup(links)
 
-      links = utils.dedup(links);
-
-      async.each(links, function(link, next) {
-	parse(link, function(err, results) {
-	  if (err) console.log(err)
-	  else tracks = tracks.concat(results);
-	  next();
-	});
+      async.each(links, function (link, done) {
+        parse(link, function (err, results) {
+          if (err) console.log(err)
+          else tracks = tracks.concat(results)
+          done()
+        })
       }, next)
     }
-    
-  ], function(err) {
 
+  ], function (err) {
     callback(err, tracks)
-
   })
 }

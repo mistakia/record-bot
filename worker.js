@@ -6,7 +6,7 @@ const debug = require('debug')
 const parse = require('./parse')
 
 class Worker {
-  constructor(filePath, log) {
+  constructor (filePath, log) {
     this.filePath = filePath
     this._log = log
 
@@ -14,23 +14,23 @@ class Worker {
     this.logger.log = console.log.bind(console) // log to stdout instead of stderr
     this.logger.err = debug('record:bot:worker:err')
     this.queue = async.queue(this._run.bind(this), 1)
-    this.queue.drain = this._check.bind(this)    
+    this.queue.drain = this._check.bind(this)
 
     this._check()
   }
 
-  _check() {
+  _check () {
     this.logger('Checking for work')
     const self = this
     const checkLater = () => {
       setTimeout(() => {
-	self._check()
+        self._check()
       }, 60000)
     }
 
     const now = new Date()
     const hourAgo = new Date(now.setTime(now.getTime() - 3600000))
-    
+
     if (this.lastCheck && this.lastCheck < hourAgo) {
       this.logger('Checked less than 10 mins ago, will check again in a minute')
       return checkLater()
@@ -42,18 +42,17 @@ class Worker {
     const lines = []
     data.toString().split('\n').forEach((line, index, arr) => {
       if (line) {
-	lines.push(line)
+        lines.push(line)
       }
     })
 
     this.lines = lines
     this.logger(`Found ${lines.length} jobs`)
 
-    if (this.lines.length)
-      this.queue.push(this.lines)
+    if (this.lines.length) { this.queue.push(this.lines) }
   }
 
-  _run(url, done) {
+  _run (url, done) {
     this.logger('Starting a job')
 
     const self = this
@@ -67,7 +66,7 @@ class Worker {
     })
   }
 
-  _update(url, done) {
+  _update (url, done) {
     this.logger(`Crawling ${url}`)
 
     const self = this
@@ -78,27 +77,23 @@ class Worker {
 
     d.run(() => {
       parse(url, (err, items) => {
-	if (err)
-	  return done(err)
+        if (err) { return done(err) }
 
-	items.forEach(async (item) => {
-	  const data = {
-	    url: item.url,
-	    stream_url: item.stream_url,
-	    title: item.title
-	  }
-	  const track = await self._log.tracks.findOrCreate(data)
+        items.forEach(async (item) => {
+          const data = {
+            url: item.url,
+            stream_url: item.stream_url,
+            title: item.title
+          }
+          const track = await self._log.tracks.findOrCreate(data)
+        })
 
-	  //TODO: save item as a track
-	  //console.log(item)
-	})
-
-	done()
+        done()
       })
-    })    
+    })
   }
 
-  _finish(err, url, done) {
+  _finish (err, url, done) {
     if (err) this.logger.err(err)
     this.logger(`Finishing ${url} job`)
 
@@ -110,5 +105,5 @@ class Worker {
     done(err)
   }
 }
-  
+
 module.exports = Worker

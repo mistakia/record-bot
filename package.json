@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "./node_modules/.bin/standard '*.js'",
+    "lint:fix": "./node_modules/.bin/standard --fix '*.js'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,5 +19,8 @@
     "record-node": "github:mistakia/record-node",
     "request": "^2.85.0",
     "urijs": "^1.19.1"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
   }
 }
