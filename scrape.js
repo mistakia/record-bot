@@ -1,11 +1,10 @@
 const cheerio = require('cheerio')
 const async = require('async')
-const parse = require('parse')
 const URI = require('urijs')
 
 const utils = require('./utils')
 
-module.exports = function (url, callback) {
+module.exports = function (url, resolve, callback) {
   // TODO: work with either a url or html
 
   let title = null
@@ -16,22 +15,26 @@ module.exports = function (url, callback) {
 
   async.waterfall([
 
-    function (next) {
-      utils.getHTML(url, function (err, body) {
+    (next) => {
+      utils.getHTML(url, (err, body) => {
         if (err) { return next(err) }
 
-        var isXML = body.slice(1, 5) === '?xml'
-        var $ = cheerio.load(body, {
+        const isXML = body.slice(1, 5) === '?xml'
+        const $ = cheerio.load(body, {
           xmlMode: !!isXML
         })
 
         title = $('title').first().text()
 
         if (!isXML) {
-          var extract = function () {
-            var feed = $(this).attr('href')
+          const extract = () => {
+            const feed = $(this).attr('href')
+            if (!feed) {
+              return
+            }
+
             try {
-              var uri = URI(feed).absoluteTo(url).normalize()
+              const uri = URI(feed).absoluteTo(url).normalize()
               if (feeds.indexOf(uri.toString()) < 0) { feeds.push(uri.toString()) }
             } catch (e) {
               console.log(e)
@@ -47,14 +50,14 @@ module.exports = function (url, callback) {
           $('a[href*=feedburner]').each(extract)
         } else {
           // get entry/item links and add to path
-          $('feed entry link').each(function () {
-            var path = $(this).attr('href')
+          $('feed entry link').each(() => {
+            const path = $(this).attr('href')
             // validate domain
             paths.push(URI(path).search('').fragment('').toString())
           })
 
-          $('channel item link').each(function () {
-            var path = $(this).text()
+          $('channel item link').each(() => {
+            const path = $(this).text()
             // validate domain
             paths.push(URI(path).search('').fragment('').toString())
           })
@@ -65,48 +68,46 @@ module.exports = function (url, callback) {
       })
     },
 
-    function (next) {
-      var parsePaths = function (path, done) {
-        parse(path, function (err, results) {
-          if (err) console.log(err)
-
+    (next) => {
+      const resolvePaths = (path, done) => {
+        resolve(path, (err, results) => {
           if (results.length) {
             tracks = tracks.concat(results)
-          } else {
-            utils.getHTML(path, function (err, body) {
-              if (err) {
-                console.log(err)
-                done()
-                return
-              }
-
-              links = links.concat(utils.dedup(utils.getResources(body, path)))
-              done()
-            })
+            return done()
           }
+
+          utils.getHTML(path, (err, body) => {
+            if (err) {
+              console.log(err)
+              done()
+              return
+            }
+
+            links = links.concat(utils.dedup(utils.getResources(body, path)))
+            done()
+          })
         })
       }
 
-      paths = utils.dedup(paths).slice(0, 25)
+      paths = utils.dedup(paths)
 
-      async.each(paths, parsePaths, next)
+      async.each(paths, resolvePaths, next)
     },
 
-    function (next) {
+    (next) => {
       if (tracks.length) { return next(null) }
 
       links = utils.dedup(links)
 
-      async.each(links, function (link, done) {
-        parse(link, function (err, results) {
-          if (err) console.log(err)
-          else tracks = tracks.concat(results)
+      async.each(links, (link, done) => {
+        resolve(link, (err, results) => {
+          if (!err) tracks = tracks.concat(results)
           done()
         })
       }, next)
     }
 
-  ], function (err) {
+  ], (err) => {
     callback(err, tracks)
   })
 }

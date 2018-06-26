@@ -3,12 +3,13 @@ const async = require('async')
 const domain = require('domain')
 const debug = require('debug')
 
-const parse = require('./parse')
+const scrape = require('./scrape')
 
 class Worker {
-  constructor (filePath, log) {
+  constructor (filePath, rn) {
     this.filePath = filePath
-    this._log = log
+    this._log = rn._log
+    this._resolve = rn.resolve
 
     this.logger = debug('record:bot:worker')
     this.logger.log = console.log.bind(console) // log to stdout instead of stderr
@@ -76,7 +77,7 @@ class Worker {
     })
 
     d.run(() => {
-      parse(url, (err, items) => {
+      scrape(url, this._resolve, (err, items) => {
         if (err) { return done(err) }
 
         items.forEach(async (item) => {

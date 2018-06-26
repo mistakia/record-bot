@@ -57,8 +57,13 @@ ipfs.on('ready', async () => {
 
   const rn = new RecordNode(ipfs, OrbitDB, opts)
 
-  await rn.load()
-  // ready
+  try {
+    await rn.loadLog()
+    // ready
+  } catch (e) {
+    console.log(e)
+    process.exit()
+  }
 
-  const worker = new Worker(dataFile, rn._log)
+  const worker = new Worker(dataFile, rn)
 })
