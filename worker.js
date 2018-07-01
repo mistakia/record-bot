@@ -80,13 +80,10 @@ class Worker {
       scrape(url, this._resolve, (err, items) => {
         if (err) { return done(err) }
 
+        this.logger(`Found ${items.length} items`)
+
         items.forEach(async (item) => {
-          const data = {
-            url: item.url,
-            stream_url: item.stream_url,
-            title: item.title
-          }
-          const track = await self._log.tracks.findOrCreate(data)
+          const track = await self._log.tracks.findOrCreate(item)
         })
 
         done()
