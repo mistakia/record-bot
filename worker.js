@@ -82,11 +82,9 @@ class Worker {
 
         this.logger(`Found ${items.length} items`)
 
-        items.forEach(async (item) => {
-          const track = await self._log.tracks.findOrCreate(item)
-        })
-
-        done()
+        async.eachSeries(items, async (item) => {
+          await self._log.tracks.findOrCreate(item)
+        }, done)
       })
     })
   }
