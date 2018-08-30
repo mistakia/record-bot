@@ -55,15 +55,21 @@ ipfs.on('ready', async () => {
     orbitPath: path.resolve(dataDir, './orbitdb')
   }
 
-  const rn = new RecordNode(ipfs, OrbitDB, opts)
+  const record = new RecordNode(ipfs, OrbitDB, opts)
 
   try {
-    await rn.loadLog()
+    await record.init()
+    const profileData = {
+      name: 'Bot',
+      bio: 'A feed of music from various websites',
+      location: 'World Wide Web'
+    }
+    await record.profile.set(profileData)
     // ready
   } catch (e) {
     console.log(e)
     process.exit()
   }
 
-  const worker = new Worker(dataFile, rn)
+  const worker = new Worker(dataFile, record)
 })

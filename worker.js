@@ -6,10 +6,10 @@ const debug = require('debug')
 const scrape = require('./scrape')
 
 class Worker {
-  constructor (filePath, rn) {
+  constructor (filePath, record) {
     this.filePath = filePath
-    this._log = rn._log
-    this._resolve = rn.resolve
+    this._log = record.log.mine()
+    this._resolve = record.resolve
 
     this.logger = debug('record:bot:worker')
     this.logger.log = console.log.bind(console) // log to stdout instead of stderr
