@@ -83,7 +83,14 @@ class Worker {
         this.logger(`Found ${items.length} items`)
 
         async.eachSeries(items, async (item) => {
-          await self._log.tracks.findOrCreate(item)
+          const trackData = {
+            metadata: item,
+            title: item.fulltitle,
+            audio: {
+              duration: item.duration
+            }
+          }
+          await self._log.tracks.findOrCreate(trackData)
         }, done)
       })
     })

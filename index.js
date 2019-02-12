@@ -1,11 +1,10 @@
-const RecordNode = require('record-node')
+const Record = require('record-node')
 const path = require('path')
 const os = require('os')
 const Logger = require('logplease')
 const debug = require('debug')
 const fs = require('fs')
 const IPFS = require('ipfs')
-const OrbitDB = require('orbit-db')
 
 const Worker = require('./worker')
 
@@ -52,10 +51,12 @@ const ipfs = new IPFS(ipfsConfig)
 
 ipfs.on('ready', async () => {
   const opts = {
-    orbitPath: path.resolve(dataDir, './orbitdb')
+    orbitdb: {
+      directory: path.resolve(dataDir, './orbitdb')
+    }
   }
 
-  const record = new RecordNode(ipfs, OrbitDB, opts)
+  const record = new Record(ipfs, opts)
 
   try {
     await record.init()
@@ -71,5 +72,5 @@ ipfs.on('ready', async () => {
     process.exit()
   }
 
-  const worker = new Worker(dataFile, record)
+  new Worker(dataFile, record)
 })
