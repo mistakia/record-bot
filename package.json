@@ -16,7 +16,7 @@
     "debug": "^3.1.0",
     "ipfs": "^0.34.4",
     "logplease": "^1.2.14",
-    "record-node": "github:mistakia/record-node#23e4a6a",
+    "record-node": "github:mistakia/record-node#70d2667",
     "request": "^2.85.0",
     "urijs": "^1.19.1"
   },

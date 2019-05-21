@@ -11,6 +11,10 @@ const Worker = require('./worker')
 debug.enable('record:*,jsipfs')
 Logger.setLogLevel(Logger.LogLevels.DEBUG)
 
+const logger = debug('record:bot')
+logger.log = console.log.bind(console) // log to stdout instead of stderr
+const error = debug('record:bot:err')
+
 const dataDir = path.resolve(os.homedir(), './.record-bot')
 if (!fs.existsSync(dataDir)) { fs.mkdirSync(dataDir) }
 const dataFile = path.resolve(dataDir, './data.txt')
@@ -24,25 +28,23 @@ const ipfsConfig = {
   init: true,
   EXPERIMENTAL: {
     dht: false, // TODO: BRICKS COMPUTER
-    relay: {
-      enabled: true,
-      hop: {
-        enabled: false, // TODO: CPU hungry on mobile
-        active: false
-      }
-    },
     pubsub: true
   },
   config: {
     Bootstrap: [],
     Addresses: {
       Swarm: [
-        // '/ip4/0.0.0.0/tcp/4002',
-        // '/ip4/0.0.0.0/tcp/4003/ws',
-        // '/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star',
+        '/ip4/0.0.0.0/tcp/4002',
+        '/ip4/0.0.0.0/tcp/4003/ws',
         '/ip4/159.203.117.254/tcp/9090/ws/p2p-websocket-star'
-        // '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star'
       ]
+    }
+  },
+  libp2p: {
+    config: {
+      relay: {
+        enabled: true
+      }
     }
   }
 }
@@ -68,7 +70,7 @@ ipfs.on('ready', async () => {
     await record.profile.set(profileData)
     // ready
   } catch (e) {
-    console.log(e)
+    error(e)
     process.exit()
   }
 
