@@ -8,8 +8,7 @@ const scrape = require('./scrape')
 class Worker {
   constructor (filePath, record) {
     this.filePath = filePath
-    this._log = record.log.mine()
-    this._resolve = record.resolve
+    this._record = record
 
     this.logger = debug('record:bot:worker')
     this.logger.log = console.log.bind(console) // log to stdout instead of stderr
@@ -77,20 +76,13 @@ class Worker {
     })
 
     d.run(() => {
-      scrape(url, this._resolve, (err, items) => {
+      scrape(url, this._record.resolve, (err, items) => {
         if (err) { return done(err) }
 
         this.logger(`Found ${items.length} items`)
 
         async.eachSeries(items, async (item) => {
-          const trackData = {
-            metadata: item,
-            title: item.fulltitle,
-            audio: {
-              duration: item.duration
-            }
-          }
-          await self._log.tracks.findOrCreate(trackData)
+          await self._record.tracks.addTrackFromUrl(item)
         }, done)
       })
     })

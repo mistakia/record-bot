@@ -1,8 +1,13 @@
 const cheerio = require('cheerio')
 const async = require('async')
 const URI = require('urijs')
+const debug = require('debug')
 
 const utils = require('./utils')
+
+const logger = debug('record:bot:scrape')
+logger.log = console.log.bind(console) // log to stdout instead of stderr
+const error = debug('record:bot:scrape:err')
 
 module.exports = function (url, resolve, callback) {
   // TODO: work with either a url or html
@@ -37,7 +42,7 @@ module.exports = function (url, resolve, callback) {
               const uri = URI(feed).absoluteTo(url).normalize()
               if (feeds.indexOf(uri.toString()) < 0) { feeds.push(uri.toString()) }
             } catch (e) {
-              console.log(e)
+              error(e)
             }
           }
 
@@ -78,7 +83,7 @@ module.exports = function (url, resolve, callback) {
 
           utils.getHTML(path, (err, body) => {
             if (err) {
-              console.log(err)
+              error(err)
               done()
               return
             }
@@ -91,6 +96,8 @@ module.exports = function (url, resolve, callback) {
 
       paths = utils.dedup(paths)
 
+      logger(`Found ${paths.length} paths`)
+
       async.each(paths, resolvePaths, next)
     },
 
@@ -99,9 +106,13 @@ module.exports = function (url, resolve, callback) {
 
       links = utils.dedup(links)
 
-      async.each(links, (link, done) => {
+      logger(`Found ${links.length} links`)
+
+      async.eachSeries(links, (link, done) => {
+        logger(`Resolving ${link}`)
         resolve(link, (err, results) => {
           if (!err) tracks = tracks.concat(results)
+          logger(`Finished ${link}`)
           done()
         })
       }, next)
