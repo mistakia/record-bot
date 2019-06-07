@@ -1,14 +1,13 @@
-const Record = require('record-node')
+const RecordNode = require('record-node')
 const path = require('path')
 const os = require('os')
 const Logger = require('logplease')
 const debug = require('debug')
 const fs = require('fs')
-const IPFS = require('ipfs')
 
 const Worker = require('./worker')
 
-debug.enable('record:*,jsipfs')
+debug.enable('record:*,ipfs:*')
 Logger.setLogLevel(Logger.LogLevels.DEBUG)
 
 const logger = debug('record:bot')
@@ -23,45 +22,18 @@ if (!fs.existsSync(dataFile)) {
   fs.closeSync(fs.openSync(dataFile, 'w'))
 }
 
-const ipfsConfig = {
-  repo: path.resolve(dataDir, './ipfs'),
-  init: true,
-  EXPERIMENTAL: {
-    dht: false, // TODO: BRICKS COMPUTER
-    pubsub: true
+const opts = {
+  orbitdb: {
+    directory: path.resolve(dataDir, './orbitdb')
   },
-  config: {
-    Bootstrap: [],
-    Addresses: {
-      Swarm: [
-        //'/ip4/0.0.0.0/tcp/4002',
-        '/ip4/0.0.0.0/tcp/4003/ws/',
-        '/ip4/206.189.77.125/tcp/9090/ws/p2p-websocket-star/'
-      ]
-    }
-  },
-  libp2p: {
-    config: {
-      relay: {
-        enabled: true
-      }
-    }
+  ipfs: {
+    repo: path.resolve(dataDir, './ipfs')
   }
 }
+const record = new RecordNode(opts)
 
-const ipfs = new IPFS(ipfsConfig)
-
-ipfs.on('ready', async () => {
-  const opts = {
-    orbitdb: {
-      directory: path.resolve(dataDir, './orbitdb')
-    }
-  }
-
-  const record = new Record(ipfs, opts)
-
+record.on('ready', async () => {
   try {
-    await record.init()
     const profileData = {
       name: 'Bot',
       bio: 'A feed of music from various websites',

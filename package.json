@@ -14,9 +14,8 @@
     "async": "^2.6.0",
     "cheerio": "^1.0.0-rc.2",
     "debug": "^3.1.0",
-    "ipfs": "^0.34.4",
     "logplease": "^1.2.14",
-    "record-node": "github:mistakia/record-node#91c7164",
+    "record-node": "github:mistakia/record-node#d22a38d",
     "request": "^2.85.0",
     "urijs": "^1.19.1"
   },
