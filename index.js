@@ -61,7 +61,7 @@ record.on('ready', async () => {
     for (let i=0; i<config.importPaths.length; i++) {
       const importPath = config.importPaths[i]
       logger.log(`Importing ${importPath}`)
-      await record.tracks.addTracksFromFs(importPath)
+      await record.tracks.addTracksFromFS(importPath)
     }
   } catch (e) {
     error(e)
