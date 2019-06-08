@@ -2,17 +2,18 @@ const fs = require('fs')
 const async = require('async')
 const domain = require('domain')
 const debug = require('debug')
+const jsonfile = require('jsonfile')
 
 const scrape = require('./scrape')
 
-class Worker {
-  constructor (filePath, record) {
-    this.filePath = filePath
+class Scraper {
+  constructor (configPath, record) {
+    this.configPath = configPath
     this._record = record
 
-    this.logger = debug('record:bot:worker')
+    this.logger = debug('record:bot:scraper')
     this.logger.log = console.log.bind(console) // log to stdout instead of stderr
-    this.logger.err = debug('record:bot:worker:err')
+    this.logger.err = debug('record:bot:scraper:err')
     this.queue = async.queue(this._run.bind(this), 1)
     this.queue.drain = this._check.bind(this)
 
@@ -38,18 +39,11 @@ class Worker {
 
     this.lastCheck = now
 
-    const data = fs.readFileSync(this.filePath)
-    const lines = []
-    data.toString().split('\n').forEach((line, index, arr) => {
-      if (line) {
-        lines.push(line)
-      }
-    })
+    const config = jsonfile.readFileSync(this.configPath)
+    this.scrapePaths = config.scrapePaths
+    this.logger(`Found ${this.scrapePaths.length} jobs`)
 
-    this.lines = lines
-    this.logger(`Found ${lines.length} jobs`)
-
-    if (this.lines.length) { this.queue.push(this.lines) }
+    if (this.scrapePaths.length) { this.queue.push(this.scrapePaths) }
   }
 
   _run (url, done) {
@@ -91,14 +85,8 @@ class Worker {
   _finish (err, url, done) {
     if (err) this.logger.err(err)
     this.logger(`Finishing ${url} job`)
-
-    this.lines.push(this.lines.shift())
-
-    const data = this.lines.join('\n')
-    fs.writeFileSync(this.filePath, data)
-
     done(err)
   }
 }
 
-module.exports = Worker
+module.exports = Scraper

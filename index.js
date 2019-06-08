@@ -4,8 +4,9 @@ const os = require('os')
 const Logger = require('logplease')
 const debug = require('debug')
 const fs = require('fs')
+const jsonfile = require('jsonfile')
 
-const Worker = require('./worker')
+const Scraper = require('./scraper')
 
 debug.enable('record:*,ipfs:*')
 Logger.setLogLevel(Logger.LogLevels.DEBUG)
@@ -16,11 +17,21 @@ const error = debug('record:bot:err')
 
 const dataDir = path.resolve(os.homedir(), './.record-bot')
 if (!fs.existsSync(dataDir)) { fs.mkdirSync(dataDir) }
-const dataFile = path.resolve(dataDir, './data.txt')
 
-if (!fs.existsSync(dataFile)) {
-  fs.closeSync(fs.openSync(dataFile, 'w'))
+const configFile = path.resolve(dataDir, './config.json')
+if (!fs.existsSync(configFile)) {
+  const defaultConfig = {
+    profile: {
+      name: 'Bot',
+      bio: 'A feed of music from various websites',
+      location: 'World Wide Web'
+    },
+    importPaths: [],
+    scrapePaths: []
+  }
+  jsonfile.writeFileSync(configFile, defaultConfig, { spaces: 2 })
 }
+const config = jsonfile.readFileSync(configFile)
 
 const opts = {
   orbitdb: {
@@ -34,17 +45,25 @@ const record = new RecordNode(opts)
 
 record.on('ready', async () => {
   try {
-    const profileData = {
-      name: 'Bot',
-      bio: 'A feed of music from various websites',
-      location: 'World Wide Web'
-    }
-    await record.profile.set(profileData)
-    // ready
+    await record.profile.set(config.profile)
   } catch (e) {
     error(e)
     process.exit()
   }
 
-  new Worker(dataFile, record)
+  new Scraper(configFile, record)
+
+  try {
+    if (!config.importPaths.length) {
+      return
+    }
+
+    for (let i=0; i<config.importPaths.length; i++) {
+      const importPath = config.importPaths[i]
+      logger.log(`Importing ${importPath}`)
+      await record.tracks.addTracksFromFs(importPath)
+    }
+  } catch (e) {
+    error(e)
+  }
 })
