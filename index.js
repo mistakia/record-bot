@@ -21,7 +21,7 @@ if (!fs.existsSync(dataDir)) { fs.mkdirSync(dataDir) }
 const configFile = path.resolve(dataDir, './config.json')
 if (!fs.existsSync(configFile)) {
   const defaultConfig = {
-    profile: {
+    about: {
       name: 'Bot',
       bio: 'A feed of music from various websites',
       location: 'World Wide Web'
@@ -45,7 +45,7 @@ const record = new RecordNode(opts)
 
 record.on('ready', async () => {
   try {
-    await record.profile.set(config.profile)
+    await record.about.set(config.about)
   } catch (e) {
     error(e)
     process.exit()
@@ -58,7 +58,7 @@ record.on('ready', async () => {
       return
     }
 
-    for (let i=0; i<config.importPaths.length; i++) {
+    for (let i = 0; i < config.importPaths.length; i++) {
       const importPath = config.importPaths[i]
       logger.log(`Importing ${importPath}`)
       await record.tracks.addTracksFromFS(importPath)

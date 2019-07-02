@@ -12,7 +12,6 @@ const error = debug('record:bot:scrape:err')
 module.exports = function (url, resolve, callback) {
   // TODO: work with either a url or html
 
-  let title = null
   let tracks = []
   let links = []
   let paths = []
@@ -28,8 +27,6 @@ module.exports = function (url, resolve, callback) {
         const $ = cheerio.load(body, {
           xmlMode: !!isXML
         })
-
-        title = $('title').first().text()
 
         if (!isXML) {
           const extract = () => {

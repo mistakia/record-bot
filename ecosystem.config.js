@@ -1,5 +1,5 @@
 module.exports = {
-  apps : [{
+  apps: [{
     name: 'record-bot',
     script: 'index.js',
 
@@ -7,6 +7,6 @@ module.exports = {
     instances: 1,
     autorestart: true,
     watch: false,
-    max_memory_restart: '1G',
+    max_memory_restart: '1G'
   }]
-};
+}

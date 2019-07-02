@@ -1,4 +1,3 @@
-const fs = require('fs')
 const async = require('async')
 const domain = require('domain')
 const debug = require('debug')
