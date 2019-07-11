@@ -27,11 +27,18 @@ if (!fs.existsSync(configFile)) {
       location: 'World Wide Web'
     },
     importPaths: [],
-    scrapePaths: []
+    scrapePaths: [],
+    completedImports: []
   }
   jsonfile.writeFileSync(configFile, defaultConfig, { spaces: 2 })
 }
+
 const config = jsonfile.readFileSync(configFile)
+
+if (typeof config.completedImports === 'undefined') {
+  config.completedImports = []
+  jsonfile.writeFileSync(configFile, config, { spaces: 2 })
+}
 
 const opts = {
   orbitdb: {
@@ -60,8 +67,15 @@ record.on('ready', async () => {
 
     for (let i = 0; i < config.importPaths.length; i++) {
       const importPath = config.importPaths[i]
+      if (config.completedImports.indexOf(importPath) > -1) {
+        logger.log(`Already imported ${importPath}`)
+        continue
+      }
+
       logger.log(`Importing ${importPath}`)
       await record.tracks.addTracksFromFS(importPath)
+      config.completedImports.push(importPath)
+      jsonfile.writeFileSync(configFile, config, { spaces: 2 })
     }
   } catch (e) {
     error(e)
