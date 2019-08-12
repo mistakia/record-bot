@@ -5,6 +5,7 @@ const Logger = require('logplease')
 const debug = require('debug')
 const fs = require('fs')
 const jsonfile = require('jsonfile')
+const moment = require('moment')
 
 const Scraper = require('./scraper')
 
