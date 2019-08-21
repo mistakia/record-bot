@@ -30,7 +30,7 @@ const defaultConfig = {
   scrapePaths: [],
   completedImports: [],
   contacts: {},
-  contactLimit: 10,
+  contactLimit: 0,
   contactExpirationLimit: 10 //days
 }
 
@@ -102,6 +102,10 @@ record.on('redux', async ({ type, payload }) => {
         return
       }
 
+      if (!config.contactLimit) {
+        return
+      }
+
       // add if below limit or have stale contacts
       const logIds = Object.keys(config.contacts)
       if (logIds.length < config.contactLimit) {
@@ -109,7 +113,7 @@ record.on('redux', async ({ type, payload }) => {
       } else {
         const now = moment()
         let contactsRemoved = true
-        const lastSeenCutOff = now.substract(config.contactExpirationLimit, 'days')
+        const lastSeenCutOff = now.subtract(config.contactExpirationLimit, 'days')
         for (let i=0; i < logIds.length; i++) {
           const logId = logIds[i]
           const lastSeen = config.contacts[logId]
@@ -118,6 +122,8 @@ record.on('redux', async ({ type, payload }) => {
             await record.contacts.disconnect(logId)
             delete config.contacts[logId]
             contactsRemoved = true
+            // TODO delete associated caches
+            // TODO unpin exclusively associated ipfs hashes
           }
         }
 
@@ -152,14 +158,17 @@ record.on('ready', async (data) => {
     }
 
     for (let i = 0; i < config.importPaths.length; i++) {
-      const importPath = config.importPaths[i]
+      const { importPath, logId } = config.importPaths[i]
       if (config.completedImports.indexOf(importPath) > -1) {
         logger.log(`Already imported ${importPath}`)
         continue
       }
 
       logger.log(`Importing ${importPath}`)
-      await record.tracks.addTracksFromFS(importPath)
+      if (logId && !record.isMe(logId)) {
+        await record.log.get(logId, { create: true })
+      }
+      await record.tracks.addTracksFromFS(importPath, { logId })
       config.completedImports.push(importPath)
       saveConfig()
     }
