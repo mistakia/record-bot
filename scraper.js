@@ -14,7 +14,7 @@ class Scraper {
     this.logger.log = console.log.bind(console) // log to stdout instead of stderr
     this.logger.err = debug('record:bot:scraper:err')
     this.queue = async.queue(this._run.bind(this), 1)
-    this.queue.drain = this._check.bind(this)
+    this.queue.drain(this._check.bind(this))
 
     this._check()
   }
