@@ -29,9 +29,9 @@ const defaultConfig = {
   importPaths: [],
   scrapePaths: [],
   completedImports: [],
-  contacts: {},
-  contactLimit: 0,
-  contactExpirationLimit: 10 //days
+  logs: {},
+  logLimit: 10,
+  logExpirationLimit: 10 //days
 }
 
 if (!fs.existsSync(configFile)) {
@@ -50,7 +50,9 @@ defaultProperties.forEach((prop) => {
   }
 })
 
-if (configUpdated) saveConfig()
+if (configUpdated) {
+  saveConfig()
+}
 
 const { address, id } = config
 logger(`ID: ${id}`)
@@ -65,66 +67,57 @@ const opts = {
 const main = async () => {
   const record = new RecordNode(opts)
 
-  const pinContact = async (logId) => {
-    return // TODO
-    logger.log(`Pinning log: ${logId}`)
-    await record.contacts.connect(logId)
-    config.contacts[logId] = new Date()
+  const syncLog = async (logAddress) => {
+    logger.log(`Pinning log: ${logAddress}`)
+    await record.logs.connect(logAddress)
+    config.logs[logAddress] = new Date()
     saveConfig()
   }
 
   record.on('redux', async ({ type, payload }) => {
     switch(type) {
-      case 'CONTACT_PEER_JOINED':
-        if (config.contacts[payload.logId]) {
-          config.contacts[payload.logId] = new Date()
-          saveConfig()
-        }
-        break
-
+      case 'LOG_PEER_JOINED':
       case 'RECORD_PEER_LEFT':
-        if (config.contacts[payload.logId]) {
-          config.contacts[payload.logId] = new Date()
+        if (config.logs[payload.logAddress]) {
+          config.logs[payload.logAddress] = new Date()
           saveConfig()
         }
         break
 
       case 'RECORD_PEER_JOINED':
-        // If contact exists, update last seen
-        if (config.contacts[payload.logId]) {
-          config.contacts[payload.logId] = new Date()
+        if (config.logs[payload.logAddress]) {
+          config.logs[payload.logAddress] = new Date()
           saveConfig()
           return
         }
 
-        if (!config.contactLimit) {
+        // if limit is zero, exit
+        if (!config.logLimit) {
           return
         }
 
-        // add if below limit or have stale contacts
-        const logIds = Object.keys(config.contacts)
-        if (logIds.length < config.contactLimit) {
-          await pinContact(payload.logId)
+        // add if below limit or have stale logs
+        const logAddresses = Object.keys(config.logs)
+        if (logAddresses.length < config.logLimit) {
+          await syncLog(payload.logAddress)
         } else {
           const now = moment()
-          let contactsRemoved = true
-          const lastSeenCutOff = now.subtract(config.contactExpirationLimit, 'days')
-          for (let i=0; i < logIds.length; i++) {
-            const logId = logIds[i]
-            const lastSeen = moment(config.contacts[logId])
+          let logsRemoved = true
+          const lastSeenCutOff = now.subtract(config.logExpirationLimit, 'days')
+          for (const logAddress of logAddresses) {
+            const lastSeen = moment(config.logs[logAddress])
             if (lastSeen.isBefore(lastSeenCutOff)) {
-              logger.log(`Purging log: ${logId}`)
-              await record.contacts.disconnect(logId)
-              delete config.contacts[logId]
-              contactsRemoved = true
-              await record.log.drop(logId)
-
+              logger.log(`Purging log: ${logAddress}`)
+              await record.logs.disconnect(logAddress)
+              delete config.logs[logAddress]
+              logsRemoved = true
+              await record.log.drop(logAddress)
               // TODO unpin exclusively associated ipfs hashes
             }
           }
 
-          if (contactsRemoved) {
-            await pinContact(payload.logId)
+          if (logsRemoved) {
+            await syncLog(payload.logAddress)
           }
         }
         break
@@ -146,6 +139,18 @@ const main = async () => {
       process.exit()
     }
 
+    try {
+      setTimeout(async () => {
+        const logAddresses = Object.keys(config.logs)
+        for (const logAddress of logAddresses) {
+          await record.logs.connect(logAddress)
+        }
+      }, 5000)
+    } catch (e) {
+      error(e)
+      process.exit()
+    }
+
     new Scraper(configFile, record)
 
     try {
@@ -154,17 +159,17 @@ const main = async () => {
       }
 
       for (let i = 0; i < config.importPaths.length; i++) {
-        const { importPath, logId } = config.importPaths[i]
+        const { importPath, logAddress } = config.importPaths[i]
         if (config.completedImports.indexOf(importPath) > -1) {
           logger.log(`Already imported ${importPath}`)
           continue
         }
 
         logger.log(`Importing ${importPath}`)
-        if (logId && !record.isMe(logId)) {
-          await record.log.get(logId, { create: true })
+        if (logAddress && !record.isMe(logAddress)) {
+          await record.log.get(logAddress, { create: true })
         }
-        await record.tracks.addTracksFromFS(importPath, { logId })
+        await record.tracks.addTracksFromFS(importPath, { logAddress })
         config.completedImports.push(importPath)
         saveConfig()
       }
