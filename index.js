@@ -68,6 +68,12 @@ const main = async () => {
   const record = new RecordNode(opts)
 
   const syncLog = async (logAddress) => {
+    // ignore any of our own logs
+    const canAppend = await record.log.canAppend(logAddress)
+    if (canAppend) {
+      return
+    }
+
     logger.log(`Pinning log: ${logAddress}`)
     await record.logs.connect(logAddress)
     config.logs[logAddress] = new Date()
