@@ -18,21 +18,8 @@ const error = debug('record:bot:err')
 const dataDir = path.resolve(os.homedir(), './.record-bot')
 if (!fs.existsSync(dataDir)) { fs.mkdirSync(dataDir) }
 const configFile = path.resolve(dataDir, './config.json')
-
+const defaultConfig = require('./config.js')
 const saveConfig = () => jsonfile.writeFileSync(configFile, config, { spaces: 2 })
-const defaultConfig = {
-  about: {
-    name: 'Bot',
-    bio: 'A Record Bot',
-    location: 'IPFS'
-  },
-  importPaths: [],
-  scrapePaths: [],
-  completedImports: [],
-  logs: {},
-  logLimit: 10,
-  logExpirationLimit: 10 // days
-}
 
 if (!fs.existsSync(configFile)) {
   jsonfile.writeFileSync(configFile, defaultConfig, { spaces: 2 })
