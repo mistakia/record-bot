@@ -6950,9 +6950,9 @@ readable-web-to-node-stream@^2.0.0:
   resolved "https://registry.yarnpkg.com/readable-web-to-node-stream/-/readable-web-to-node-stream-2.0.0.tgz#751e632f466552ac0d5c440cc01470352f93c4b7"
   integrity sha512-+oZJurc4hXpaaqsN68GoZGQAQIA3qr09Or4fqEsargABnbe5Aau8hFn6ISVleT3cpY/0n/8drn7huyyEvTbghA==
 
-record-node@mistakia/record-node#1778262:
+record-node@mistakia/record-node#f611234:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/177826241042739a148674475b1e8206189fadef"
+  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/f611234ea9c574a26b2568e6607703262631ee5a"
   dependencies:
     bitboot "^0.1.0"
     body-parser "^1.18.3"
