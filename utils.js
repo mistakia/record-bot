@@ -51,7 +51,7 @@ const protocolSupported = (URL) => {
 }
 
 const getResources = (data, url) => {
-  let resources = []
+  const resources = []
   const resourceText = data.toString('utf8')
 
   // Regular expressions for finding URL items in HTML and text
@@ -122,8 +122,8 @@ const getResources = (data, url) => {
 const dedup = (arr) => {
   let i = 0
   const l = arr.length
-  let out = []
-  let obj = {}
+  const out = []
+  const obj = {}
 
   for (; i < l; i++) {
     obj[arr[i]] = 0

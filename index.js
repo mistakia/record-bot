@@ -9,7 +9,7 @@ const moment = require('moment')
 
 const Scraper = require('./scraper')
 
-debug.enable('record:*,ipfs:*')
+debug.enable('record:*')
 Logger.setLogLevel(Logger.LogLevels.INFO)
 const logger = debug('record:bot')
 logger.log = console.log.bind(console) // log to stdout instead of stderr
@@ -31,7 +31,7 @@ const defaultConfig = {
   completedImports: [],
   logs: {},
   logLimit: 10,
-  logExpirationLimit: 10 //days
+  logExpirationLimit: 10 // days
 }
 
 if (!fs.existsSync(configFile)) {
@@ -81,7 +81,7 @@ const main = async () => {
   }
 
   record.on('redux', async ({ type, payload }) => {
-    switch(type) {
+    switch (type) {
       case 'LOG_PEER_JOINED':
       case 'RECORD_PEER_LEFT':
         if (config.logs[payload.logAddress]) {
@@ -90,7 +90,17 @@ const main = async () => {
         }
         break
 
-      case 'RECORD_PEER_JOINED':
+      case 'IMPORTER_PROCESSED_FILE': {
+        const { completed, remaining, file } = payload
+        return logger.log(`imported ${file} (${completed}/${remaining})`)
+      }
+
+      case 'IMPORTER_FINISHED': {
+        config.completedImports.push(payload.filepath)
+        return saveConfig()
+      }
+
+      case 'RECORD_PEER_JOINED': {
         if (config.logs[payload.logAddress]) {
           config.logs[payload.logAddress] = new Date()
           saveConfig()
@@ -127,9 +137,7 @@ const main = async () => {
           }
         }
         break
-
-      default:
-        return
+      }
     }
   })
 
@@ -175,9 +183,7 @@ const main = async () => {
         if (logAddress && !record.isMe(logAddress)) {
           await record.log.get(logAddress, { create: true })
         }
-        await record.tracks.addTracksFromFS(importPath, { logAddress })
-        config.completedImports.push(importPath)
-        saveConfig()
+        record.importer.add(importPath, logAddress)
       }
     } catch (e) {
       error(e)

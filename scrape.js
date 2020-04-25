@@ -15,7 +15,7 @@ module.exports = function (url, resolve, callback) {
   let tracks = []
   let links = []
   let paths = []
-  let feeds = []
+  const feeds = []
 
   async.waterfall([
 
