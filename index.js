@@ -168,9 +168,11 @@ const main = async () => {
 
         logger.log(`Importing ${importPath}`)
         if (logAddress && !record.isMe(logAddress)) {
-          await record.log.get(logAddress, { create: true })
+          const log = await record.log.get(logAddress, { create: true })
+          record.importer.add(importPath, log.address.toString())
+        } else {
+          record.importer.add(importPath, logAddress)
         }
-        record.importer.add(importPath, logAddress)
       }
     } catch (e) {
       error(e)
