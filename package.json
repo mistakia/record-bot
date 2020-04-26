@@ -17,7 +17,7 @@
     "jsonfile": "^6.0.1",
     "logplease": "^1.2.15",
     "moment": "^2.24.0",
-    "record-node": "mistakia/record-node#f611234",
+    "record-node": "mistakia/record-node#96a00d0",
     "request": "^2.88.2",
     "urijs": "^1.19.2"
   },
