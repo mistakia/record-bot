@@ -181,6 +181,22 @@ const main = async () => {
   })
 
   const ipfsd = await createIPFSDaemon(dataDir)
+
+  process.on('SIGTERM', () => {
+    ipfsd.stop().then(() => {
+      if (!record) {
+        logger.log('Sucessfully shutdown')
+        process.exit()
+        return
+      }
+
+      record.stop().then(() => {
+        logger.log('Sucessfully shutdown')
+        process.exit()
+      })
+    })
+  })
+
   await record.init(ipfsd.api)
 }
 
