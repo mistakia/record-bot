@@ -8,6 +8,7 @@ const jsonfile = require('jsonfile')
 const moment = require('moment')
 
 const Scraper = require('./scraper')
+const createIPFSDaemon = require('./ipfsd')
 
 debug.enable('record:*')
 Logger.setLogLevel(Logger.LogLevels.INFO)
@@ -179,7 +180,8 @@ const main = async () => {
     }
   })
 
-  await record.init()
+  const ipfsd = await createIPFSDaemon(dataDir)
+  await record.init(ipfsd.api)
 }
 
 try {
