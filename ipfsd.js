@@ -83,8 +83,9 @@ module.exports = async function (opts) {
 
   try {
     await ipfsd.start()
-    const { id } = await ipfsd.api.id()
+    const { id, addresses } = await ipfsd.api.id()
     logger(`PeerID is ${id}`)
+    addresses.forEach(address => logger(`Listening at ${address}`))
     logger(`Repo is at ${ipfsd.path}`)
   } catch (err) {
     if (!err.message.includes('ECONNREFUSED')) {
