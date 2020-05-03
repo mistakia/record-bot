@@ -6,15 +6,17 @@ const debug = require('debug')
 const fs = require('fs')
 const jsonfile = require('jsonfile')
 const moment = require('moment')
+const createIPFSDaemon = require('record-ipfsd')
 
 const Scraper = require('./scraper')
-const createIPFSDaemon = require('./ipfsd')
 
 debug.enable('record:*')
 Logger.setLogLevel(Logger.LogLevels.INFO)
 const logger = debug('record:bot')
 logger.log = console.log.bind(console) // log to stdout instead of stderr
 const error = debug('record:bot:err')
+
+const getIpfsBinPath = () => require('go-ipfs-dep').path()
 
 const dataDir = path.resolve(os.homedir(), './.record-bot')
 if (!fs.existsSync(dataDir)) { fs.mkdirSync(dataDir) }
@@ -180,7 +182,11 @@ const main = async () => {
     }
   })
 
-  const ipfsd = await createIPFSDaemon(dataDir)
+  const ipfsd = await createIPFSDaemon({
+    repo: path.resolve(dataDir, 'ipfs'),
+    ipfsBin: getIpfsBinPath(),
+    log: logger.log
+  })
 
   process.on('SIGTERM', () => {
     ipfsd.stop().then(() => {
@@ -203,5 +209,5 @@ const main = async () => {
 try {
   main()
 } catch (err) {
-  console.log(err)
+  error(err)
 }
