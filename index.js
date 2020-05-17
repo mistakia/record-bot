@@ -116,6 +116,7 @@ const main = async () => {
               logger.log(`Purging log: ${logAddress}`)
               await record.logs.disconnect(logAddress)
               delete config.logs[logAddress]
+              saveConfig()
               logsRemoved = true
               await record.log.drop(logAddress)
               // TODO unpin exclusively associated ipfs hashes
