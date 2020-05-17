@@ -73,7 +73,7 @@ const main = async () => {
   record.on('redux', async ({ type, payload }) => {
     switch (type) {
       case 'LOG_PEER_JOINED':
-      case 'RECORD_PEER_LEFT':
+        logger.log(`peer ${payload.peerId} joined ${payload.logAddress}`)
         if (config.logs[payload.logAddress]) {
           config.logs[payload.logAddress] = new Date()
           saveConfig()
@@ -91,22 +91,17 @@ const main = async () => {
       }
 
       case 'RECORD_PEER_JOINED': {
-        if (config.logs[payload.logAddress]) {
-          config.logs[payload.logAddress] = new Date()
-          saveConfig()
-          return
-        }
-
         // if limit is zero, exit
         if (!config.logLimit) {
           return
         }
 
-        // add if below limit or have stale logs
+        // add if below limit
         const logAddresses = Object.keys(config.logs)
         if (logAddresses.length < config.logLimit) {
           await syncLog(payload.logAddress)
         } else {
+          // check for stale logs
           const now = moment()
           let logsRemoved = true
           const lastSeenCutOff = now.subtract(config.logExpirationLimit, 'days')
