@@ -64,7 +64,7 @@ const main = async () => {
       return
     }
 
-    logger.log(`Pinning log: ${logAddress}`)
+    logger(`Pinning log: ${logAddress}`)
     await record.logs.connect(logAddress)
     config.logs[logAddress] = new Date()
     saveConfig()
@@ -73,7 +73,7 @@ const main = async () => {
   record.on('redux', async ({ type, payload }) => {
     switch (type) {
       case 'LOG_PEER_JOINED':
-        logger.log(`peer ${payload.peerId} joined ${payload.logAddress}`)
+        logger(`peer ${payload.peerId} joined ${payload.logAddress}`)
         if (config.logs[payload.logAddress]) {
           config.logs[payload.logAddress] = new Date()
           saveConfig()
@@ -82,7 +82,7 @@ const main = async () => {
 
       case 'IMPORTER_PROCESSED_FILE': {
         const { completed, remaining, file } = payload
-        return logger.log(`imported ${file} (${completed}/${remaining})`)
+        return logger(`imported ${file} (${completed}/${remaining})`)
       }
 
       case 'IMPORTER_FINISHED': {
@@ -98,27 +98,26 @@ const main = async () => {
 
         // add if below limit
         const logAddresses = Object.keys(config.logs)
+        logger(`Have ${logAddresses.length} logs, limit: ${config.logLimit}`)
         if (logAddresses.length < config.logLimit) {
           await syncLog(payload.logAddress)
         } else {
           // check for stale logs
           const now = moment()
-          let logsRemoved = true
           const lastSeenCutOff = now.subtract(config.logExpirationLimit, 'days')
           for (const logAddress of logAddresses) {
             const lastSeen = moment(config.logs[logAddress])
             if (lastSeen.isBefore(lastSeenCutOff)) {
-              logger.log(`Purging log: ${logAddress}`)
+              logger(`Purging log: ${logAddress}`)
               await record.logs.disconnect(logAddress)
               delete config.logs[logAddress]
               saveConfig()
-              logsRemoved = true
               await record.log.drop(logAddress)
               // TODO unpin exclusively associated ipfs hashes
             }
           }
 
-          if (logsRemoved) {
+          if (Object.keys(config.logs) < config.logLimit) {
             await syncLog(payload.logAddress)
           }
         }
@@ -161,11 +160,11 @@ const main = async () => {
       for (let i = 0; i < config.importPaths.length; i++) {
         const { importPath, logAddress } = config.importPaths[i]
         if (config.completedImports.indexOf(importPath) > -1) {
-          logger.log(`Already imported ${importPath}`)
+          logger(`Already imported ${importPath}`)
           continue
         }
 
-        logger.log(`Importing ${importPath}`)
+        logger(`Importing ${importPath}`)
         if (logAddress && !record.isMe(logAddress)) {
           const log = await record.log.get(logAddress, { create: true })
           record.importer.add(importPath, log.address.toString())
@@ -181,19 +180,19 @@ const main = async () => {
   const ipfsd = await createIPFSDaemon({
     repo: path.resolve(dataDir, 'ipfs'),
     ipfsBin: getIpfsBinPath(),
-    log: logger.log
+    log: logger
   })
 
   process.on('SIGTERM', () => {
     ipfsd.stop().then(() => {
       if (!record) {
-        logger.log('Sucessfully shutdown')
+        logger('Sucessfully shutdown')
         process.exit()
         return
       }
 
       record.stop().then(() => {
-        logger.log('Sucessfully shutdown')
+        logger('Sucessfully shutdown')
         process.exit()
       })
     })
