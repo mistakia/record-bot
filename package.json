@@ -13,17 +13,15 @@
   "dependencies": {
     "async": "^3.2.0",
     "cheerio": "^1.0.0-rc.2",
-    "debug": "^4.1.1",
-    "go-ipfs-dep": "0.5.0",
-    "ipfs-http-client": "44.0.0",
-    "ipfsd-ctl": "4.1.0",
-    "jsonfile": "^6.0.1",
+    "debug": "4.3.1",
+    "go-ipfs": "^0.7.0",
+    "jsonfile": "6.1.0",
     "logplease": "^1.2.15",
-    "moment": "^2.24.0",
-    "record-ipfsd": "mistakia/record-ipfsd#6bb15a3",
-    "record-node": "mistakia/record-node#7e6a955",
+    "moment": "2.29.1",
+    "record-ipfsd": "mistakia/record-ipfsd#965babb",
+    "record-node": "mistakia/record-node#681fb81",
     "request": "^2.88.2",
-    "urijs": "^1.19.2"
+    "urijs": "1.19.5"
   },
   "devDependencies": {
     "standard": "^14.3.3"

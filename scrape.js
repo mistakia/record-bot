@@ -73,6 +73,7 @@ module.exports = function (url, resolve, callback) {
     (next) => {
       const resolvePaths = (path, done) => {
         resolve(path, (err, results) => {
+          if (err) error(err)
           if (results.length) {
             tracks = tracks.concat(results)
             return done()

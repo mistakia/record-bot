@@ -16,7 +16,7 @@ const logger = debug('record:bot')
 logger.log = console.log.bind(console) // log to stdout instead of stderr
 const error = debug('record:bot:err')
 
-const getIpfsBinPath = () => require('go-ipfs-dep').path()
+const getIpfsBinPath = () => require('go-ipfs').path()
 
 const dataDir = path.resolve(os.homedir(), './.record-bot')
 if (!fs.existsSync(dataDir)) { fs.mkdirSync(dataDir) }
@@ -188,7 +188,6 @@ const main = async () => {
       if (!record) {
         logger('Sucessfully shutdown')
         process.exit()
-        return
       }
 
       record.stop().then(() => {
