@@ -19,7 +19,7 @@
     "logplease": "^1.2.15",
     "moment": "2.29.1",
     "record-ipfsd": "mistakia/record-ipfsd#965babb",
-    "record-node": "mistakia/record-node#681fb81",
+    "record-node": "mistakia/record-node#749aa09",
     "request": "^2.88.2",
     "urijs": "1.19.5"
   },

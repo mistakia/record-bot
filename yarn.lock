@@ -1615,11 +1615,6 @@ cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-crypto-hash@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/crypto-hash/-/crypto-hash-1.3.0.tgz#b402cb08f4529e9f4f09346c3e275942f845e247"
-  integrity sha512-lyAZ0EMyjDkVvz8WOeVnuCPvKVBXcMv1l5SVqO1yC7PzTwrD/pPje/BIRbWhMoPe436U+Y2nD7f5bFx0kt+Sbg==
-
 css-select@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/css-select/-/css-select-3.1.2.tgz#d52cbdc6fee379fba97fb0d3925abbd18af2d9d8"
@@ -5776,14 +5771,13 @@ record-ipfsd@mistakia/record-ipfsd#965babb:
     ipfs-http-client "47.0.1"
     ipfsd-ctl "7.2.0"
 
-record-node@mistakia/record-node#681fb81:
+record-node@mistakia/record-node#749aa09:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/681fb81576ca3f893efb339926910e21da1c882f"
+  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/749aa090664c0da4fff93fdc0ad24cff459bcf25"
   dependencies:
     bitboot "^0.1.0"
     body-parser "^1.18.3"
     buffer-peek-stream "^1.0.1"
-    crypto-hash "1.3.0"
     debug "4.3.1"
     deep-extend "^0.6.0"
     express "^4.16.3"
@@ -5813,7 +5807,7 @@ record-node@mistakia/record-node#681fb81:
     orbit-db-store mistakia/orbit-db-store#proto/record
     p-queue "^6.3.0"
     record-resolver mistakia/record-resolver#499873d
-    secp256k1 "4.0.2"
+    secp256k1 "3.8.0"
     sqlite3 "5.0.1"
 
 record-resolver@mistakia/record-resolver#499873d:
@@ -6028,16 +6022,7 @@ scrypt-js@3.0.1:
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-3.0.1.tgz#d314a57c2aef69d1ad98a138a21fe9eafa9ee312"
   integrity sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==
 
-secp256k1@4.0.2, secp256k1@^4.0.0:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
-  integrity sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg==
-  dependencies:
-    elliptic "^6.5.2"
-    node-addon-api "^2.0.0"
-    node-gyp-build "^4.2.0"
-
-secp256k1@^3.6.2:
+secp256k1@3.8.0, secp256k1@^3.6.2:
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.8.0.tgz#28f59f4b01dbee9575f56a47034b7d2e3b3b352d"
   integrity sha512-k5ke5avRZbtl9Tqx/SA7CbY3NF6Ro+Sj9cZxezFzuBlLDmyqPiL8hJJ+EmzD8Ig4LUDByHJ3/iPOVoRixs/hmw==
@@ -6050,6 +6035,15 @@ secp256k1@^3.6.2:
     elliptic "^6.5.2"
     nan "^2.14.0"
     safe-buffer "^5.1.2"
+
+secp256k1@^4.0.0:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
+  integrity sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg==
+  dependencies:
+    elliptic "^6.5.2"
+    node-addon-api "^2.0.0"
+    node-gyp-build "^4.2.0"
 
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.5.0:
   version "5.7.1"
