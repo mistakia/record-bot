@@ -5764,12 +5764,13 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
-record-ipfsd@mistakia/record-ipfsd#d04873a:
+record-ipfsd@mistakia/record-ipfsd#2302cc0:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-ipfsd/tar.gz/d04873a0495ab072ef8d91936f02c503b7abf912"
+  resolved "https://codeload.github.com/mistakia/record-ipfsd/tar.gz/2302cc0ad78c88245fdaf59173c8ace161c2d04e"
   dependencies:
     ipfs-http-client "47.0.1"
     ipfsd-ctl "7.2.0"
+    jsonfile "^6.1.0"
 
 record-node@mistakia/record-node#25368a8:
   version "0.0.1"
@@ -5807,7 +5808,7 @@ record-node@mistakia/record-node#25368a8:
     orbit-db-store mistakia/orbit-db-store#proto/record
     p-queue "^6.3.0"
     record-resolver mistakia/record-resolver#499873d
-    secp256k1 "3.8.0"
+    secp256k1 "4.0.2"
     sqlite3 "5.0.1"
 
 record-resolver@mistakia/record-resolver#499873d:
