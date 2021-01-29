@@ -129,6 +129,8 @@ const main = async () => {
   record.on('ready', async (data) => {
     config.id = data.id
     config.address = data.orbitdb.address
+
+    // TODO - set ipfs peer Identity (PeerID & PrivKey)
     saveConfig()
 
     try {
@@ -178,6 +180,7 @@ const main = async () => {
   })
 
   const ipfsd = await createIPFSDaemon({
+    Identity: (config.Identity && config.Identity.privKey) ? config.Identity : undefined,
     repo: path.resolve(dataDir, 'ipfs'),
     ipfsBin: getIpfsBinPath(),
     log: logger

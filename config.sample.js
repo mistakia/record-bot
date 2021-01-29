@@ -4,6 +4,10 @@ module.exports = {
     bio: 'A Record Bot',
     location: 'IPFS'
   },
+  Identity: {
+    PeerID: '',
+    PrivKey: ''
+  },
   importPaths: [],
   scrapePaths: [],
   completedImports: [],

@@ -3844,7 +3844,7 @@ json-text-sequence@~0.1.0:
   dependencies:
     delimit-stream "0.1.0"
 
-jsonfile@6.1.0, jsonfile@^6.0.1:
+jsonfile@6.1.0, jsonfile@^6.0.1, jsonfile@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-6.1.0.tgz#bc55b2634793c679ec6403094eb13698a6ec0aae"
   integrity sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==
@@ -5764,16 +5764,16 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
-record-ipfsd@mistakia/record-ipfsd#965babb:
+record-ipfsd@mistakia/record-ipfsd#d04873a:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-ipfsd/tar.gz/965babbe57a5a8afb29c4879ce71de8793adeeb9"
+  resolved "https://codeload.github.com/mistakia/record-ipfsd/tar.gz/d04873a0495ab072ef8d91936f02c503b7abf912"
   dependencies:
     ipfs-http-client "47.0.1"
     ipfsd-ctl "7.2.0"
 
-record-node@mistakia/record-node#749aa09:
+record-node@mistakia/record-node#25368a8:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/749aa090664c0da4fff93fdc0ad24cff459bcf25"
+  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/25368a8a85d7a7af49748a5c64f4ab17ab350756"
   dependencies:
     bitboot "^0.1.0"
     body-parser "^1.18.3"
