@@ -180,7 +180,7 @@ const main = async () => {
   })
 
   const ipfsd = await createIPFSDaemon({
-    Identity: (config.Identity && config.Identity.privKey) ? config.Identity : undefined,
+    Identity: (config.Identity && config.Identity.PrivKey) ? config.Identity : undefined,
     repo: path.resolve(dataDir, 'ipfs'),
     ipfsBin: getIpfsBinPath(),
     log: logger
