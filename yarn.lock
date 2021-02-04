@@ -3945,10 +3945,10 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-knex@^0.21.1:
-  version "0.21.16"
-  resolved "https://registry.yarnpkg.com/knex/-/knex-0.21.16.tgz#5431efe66d7194cdcf34ba3a874c6c66d7229c1a"
-  integrity sha512-M3FTFfby49AEngsx/0UXEJEMnKMjPjeKOtvk+AY6d6kboz9NsT7xDudl0wRNj+S0lq0yearCSb1v+YxgbU/kWA==
+knex@0.21.17:
+  version "0.21.17"
+  resolved "https://registry.yarnpkg.com/knex/-/knex-0.21.17.tgz#f99f5b90132b9bb9c6eb5c81f0a035e0232c870f"
+  integrity sha512-kAt58lRwjzqwedApKF7luYPa7HsLb0oDiczwKrkZcekIzTmSow5YGK149S2C8HjH63R3NcOBo9+1rjvWnC1Paw==
   dependencies:
     colorette "1.2.1"
     commander "^6.2.0"
@@ -5772,9 +5772,9 @@ record-ipfsd@mistakia/record-ipfsd#2302cc0:
     ipfsd-ctl "7.2.0"
     jsonfile "^6.1.0"
 
-record-node@mistakia/record-node#25368a8:
+record-node@mistakia/record-node#aa0a367:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/25368a8a85d7a7af49748a5c64f4ab17ab350756"
+  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/aa0a36769bcbea1c344ad97a703217e6a20e5a35"
   dependencies:
     bitboot "^0.1.0"
     body-parser "^1.18.3"
@@ -5792,7 +5792,7 @@ record-node@mistakia/record-node#25368a8:
     is-ipfs "2.0.0"
     it-to-stream "^0.1.1"
     jsonfile "^6.0.1"
-    knex "^0.21.1"
+    knex "0.21.17"
     leveldown "^5.1.1"
     libp2p-crypto "0.19.0"
     mime-types "2.1.28"
@@ -5808,7 +5808,7 @@ record-node@mistakia/record-node#25368a8:
     orbit-db-store mistakia/orbit-db-store#proto/record
     p-queue "^6.3.0"
     record-resolver mistakia/record-resolver#499873d
-    secp256k1 "4.0.2"
+    secp256k1 "3.8.0"
     sqlite3 "5.0.1"
 
 record-resolver@mistakia/record-resolver#499873d:
