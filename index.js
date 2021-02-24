@@ -200,7 +200,7 @@ const main = async () => {
     })
   })
 
-  await record.init(ipfsd.api)
+  await record.init(ipfsd)
 }
 
 try {

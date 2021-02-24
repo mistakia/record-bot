@@ -18,8 +18,8 @@
     "jsonfile": "6.1.0",
     "logplease": "^1.2.15",
     "moment": "2.29.1",
-    "record-ipfsd": "mistakia/record-ipfsd#2302cc0",
-    "record-node": "mistakia/record-node#aa0a367",
+    "record-ipfsd": "mistakia/record-ipfsd#6162495",
+    "record-node": "mistakia/record-node#ccd85e3",
     "request": "^2.88.2",
     "urijs": "1.19.5"
   },
