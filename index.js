@@ -51,7 +51,11 @@ logger(`Default Orbit Address: ${address}`)
 const opts = {
   address,
   id,
-  directory: dataDir
+  directory: dataDir,
+  logger: {
+    info: debug('record:node'),
+    error: debug('record:node:err')
+  }
 }
 
 const main = async () => {
@@ -183,7 +187,7 @@ const main = async () => {
     Identity: (config.Identity && config.Identity.PrivKey) ? config.Identity : undefined,
     repo: path.resolve(dataDir, 'ipfs'),
     ipfsBin: getIpfsBinPath(),
-    log: logger
+    log: debug('record:ipfsd')
   })
 
   process.on('SIGTERM', () => {

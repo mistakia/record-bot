@@ -2781,10 +2781,10 @@ globalthis@^1.0.1:
   dependencies:
     define-properties "^1.1.3"
 
-go-ipfs@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/go-ipfs/-/go-ipfs-0.7.0.tgz#1c19ecec1f5943af4175b8d5fdcb09040a842c64"
-  integrity sha512-1NjJwOKuy3dz55LCQxw2ItinIhsKAHv3M/V47RXWSx0HXERhQSizaccA2Pz/HlCRNC+0O8VAyg0ui2NLf14R8Q==
+go-ipfs@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/go-ipfs/-/go-ipfs-0.8.0.tgz#e5a14f2bc36b76174305e596d29af6712f5465c1"
+  integrity sha512-T2nE6UgsmGeAAlr3//4sL3uNrU76RStJasD7lTNYCQV6mz13ynfku63paZRI5V2oGZTWh8ik7O7d0TXD0qD3rA==
   dependencies:
     go-platform "^1.0.0"
     gunzip-maybe "^1.4.2"
@@ -4445,13 +4445,6 @@ moment@2.29.1:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-morgan-debug@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/morgan-debug/-/morgan-debug-2.0.0.tgz#ba4756bb76cbe7e55889656b9f117f0512444367"
-  integrity sha1-ukdWu3bL5+VYiWVrnxF/BRJEQ2c=
-  dependencies:
-    through2 "~2.0.1"
-
 morgan@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.10.0.tgz#091778abc1fc47cd3509824653dae1faab6b17d7"
@@ -5764,22 +5757,21 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
-record-ipfsd@mistakia/record-ipfsd#6162495:
+record-ipfsd@mistakia/record-ipfsd#4691979:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-ipfsd/tar.gz/6162495d5bec389f8a5024b8c40cc026ebb182f0"
+  resolved "https://codeload.github.com/mistakia/record-ipfsd/tar.gz/469197940b9b694961145ae52322a49a6949443f"
   dependencies:
     ipfs-http-client "47.0.1"
     ipfsd-ctl "7.2.0"
     jsonfile "^6.1.0"
 
-record-node@mistakia/record-node#ccd85e3:
+record-node@mistakia/record-node#d913404:
   version "0.0.1"
-  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/ccd85e333bf48eff83125f54c95c3dd19aacdfd5"
+  resolved "https://codeload.github.com/mistakia/record-node/tar.gz/d91340489726478ce5568650ccfbc694ed0a236f"
   dependencies:
     bitboot "^0.1.0"
     body-parser "^1.18.3"
     buffer-peek-stream "^1.0.1"
-    debug "4.3.1"
     deep-extend "^0.6.0"
     express "^4.16.3"
     file-type "16.2.0"
@@ -5797,7 +5789,6 @@ record-node@mistakia/record-node#ccd85e3:
     libp2p-crypto "0.19.0"
     mime-types "2.1.28"
     morgan "^1.10.0"
-    morgan-debug "^2.0.0"
     music-metadata "6.3.7"
     node-fetch "^2.6.0"
     orbit-db mistakia/orbit-db#proto/record
@@ -6590,7 +6581,7 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-through2@^2.0.3, through2@~2.0.1:
+through2@^2.0.3:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.5.tgz#01c1e39eb31d07cb7d03a96a70823260b23132cd"
   integrity sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==
