@@ -7,7 +7,10 @@ const fs = require('fs')
 const jsonfile = require('jsonfile')
 const moment = require('moment')
 const createIPFSDaemon = require('record-ipfsd')
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
 
+const argv = yargs(hideBin(process.argv)).argv
 const Scraper = require('./scraper')
 
 debug.enable('record:*')
@@ -18,7 +21,7 @@ const error = debug('record:bot:err')
 
 const getIpfsBinPath = () => require('go-ipfs').path()
 
-const dataDir = path.resolve(os.homedir(), './.record-bot')
+const dataDir = path.resolve(argv.dataDir || os.homedir(), './.record-bot')
 if (!fs.existsSync(dataDir)) { fs.mkdirSync(dataDir) }
 const configFile = path.resolve(dataDir, './config.json')
 const defaultConfig = require('./config.js')
