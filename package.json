@@ -21,7 +21,7 @@
     "record-ipfsd": "mistakia/record-ipfsd#4691979",
     "record-node": "mistakia/record-node#8dafc78",
     "request": "^2.88.2",
-    "urijs": "1.19.5",
+    "urijs": "1.19.8",
     "yargs": "^17.0.1"
   },
   "devDependencies": {
