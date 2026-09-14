@@ -1,6 +1,6 @@
 const URI = require('urijs')
 const request = require('request')
-const domain = require('domain')
+const domain = require('node:domain')
 
 const cleanURL = (URL) => {
   return URL
@@ -130,7 +130,7 @@ const dedup = (arr) => {
   }
 
   for (i in obj) {
-    if (obj.hasOwnProperty(i)) out.push(i)
+    if (Object.prototype.hasOwnProperty.call(obj, i)) out.push(i)
   }
 
   return out

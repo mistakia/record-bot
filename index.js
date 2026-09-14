@@ -159,7 +159,7 @@ const main = async () => {
       process.exit()
     }
 
-    new Scraper(configFile, record)
+    record.scraper = new Scraper(configFile, record)
 
     try {
       if (!config.importPaths.length) {

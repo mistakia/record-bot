@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
     "lint": "./node_modules/.bin/standard '*.js'",
     "lint:fix": "./node_modules/.bin/standard --fix '*.js'",
+    "verify": "yarn lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

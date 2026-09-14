@@ -1,5 +1,5 @@
 const async = require('async')
-const domain = require('domain')
+const domain = require('node:domain')
 const debug = require('debug')
 const jsonfile = require('jsonfile')
 
